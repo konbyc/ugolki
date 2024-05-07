@@ -1,3 +1,6 @@
+from turtle import Turtle
+
+SQUARE = 60
 SQ_HOR = 4
 SQ_VER = 4
 
@@ -9,6 +12,14 @@ STARTING_POSITIONS = [
      [SQ_VER - 1, SQ_HOR - 2], [SQ_VER - 1, SQ_HOR - 1]]
 ]
 
+WIDTH = SQUARE * SQ_HOR
+HEIGHT = SQUARE * SQ_VER
+
+BOX_LEFT = -WIDTH/2
+BOX_RIGHT = WIDTH/2
+BOX_UP = HEIGHT/2
+BOX_DOWN = -HEIGHT/2
+
 
 def within_board(cell):
     if 0 <= cell[0] < SQ_VER and 0 <= cell[1] < SQ_HOR:
@@ -17,12 +28,51 @@ def within_board(cell):
         return False
 
 
-class Board:
+def make_human_readable(moves):
+    writeup = ''
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    for move in moves:
+        start = alphabet[move[0][1]] + str(move[0][0] + 1)
+        finish = alphabet[move[1][1]] + str(move[1][0] + 1)
+        writeup += start + ':' + finish + '\n'
+    return writeup
+
+
+class Board(Turtle):
 
     def __init__(self, white_starting_positions, black_starting_positions):
+        super().__init__()
         self.white = white_starting_positions
         self.black = black_starting_positions
-        self.possible_moves = []
+        self.valid_moves = []
+        # self.draw_board()
+
+    def draw_board(self):
+        self.penup()
+        self.hideturtle()
+        self.speed("fastest")
+        self.color(153, 102, 51)
+        for square_number in range(SQ_HOR + 1):
+            self.goto(BOX_LEFT + SQUARE * square_number, BOX_UP)
+            self.pendown()
+            self.goto(BOX_LEFT + SQUARE * square_number, BOX_DOWN)
+            self.penup()
+        for square_number in range(SQ_VER + 1):
+            self.goto(BOX_LEFT, BOX_UP - SQUARE * square_number)
+            self.pendown()
+            self.goto(BOX_RIGHT, BOX_UP - SQUARE * square_number)
+            self.penup()
+        for piece in self.white + self.black:
+            self.goto(BOX_LEFT + SQUARE * (piece[1] + 1/2), BOX_DOWN + SQUARE * (piece[0] + 1/2) - 20)
+            if piece in self.white:
+                self.color('white')
+            else:
+                self.color('black')
+            self.pendown()
+            self.begin_fill()
+            self.circle(20, steps=6)
+            self.end_fill()
+            self.penup()
 
     def free_cell(self, cell):
         if cell not in self.white + self.black:
@@ -30,7 +80,7 @@ class Board:
         else:
             return False
 
-    def get_possible_moves(self, piece):
+    def get_valid_moves(self, piece):
 
         moves = []
 
