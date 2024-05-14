@@ -7,7 +7,11 @@ The goal of the project is to implement a neural network that will learn to play
 Currently implemented:
 
 -computer plays against itself, no human player possible,
+
 -logic of making moves: choose the move that leads to the greatest decrease of distance to the opposite corner, summed over player's pieces,
+
 -current analysis depth: one move only,
+
 -press space repeatedly to observe computer make its moves,
+
 -the moves are saved to the text file game.txt.
