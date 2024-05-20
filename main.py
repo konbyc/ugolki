@@ -20,12 +20,12 @@ def turn():
     move = strategy.choose_move(board)
     board.make_move(move)
     board.last_move = move
-    board.turn_number += 1
     moves_history.append(move)
     board.check_win()
     board.clear()
     board.draw_board()
     screen.update()
+    board.turn_number += 1
     screen.onkeypress(turn, "space")
 
 
@@ -40,7 +40,6 @@ board = Board(STARTING_POSITIONS[0], STARTING_POSITIONS[1])
 board.draw_board()
 moves_history = []
 
-screen.onkeypress(screen.bye, "Escape")
 screen.onkeypress(start_game, "space")
 screen.listen()
 screen.exitonclick()

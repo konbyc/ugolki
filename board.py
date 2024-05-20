@@ -63,6 +63,9 @@ class Board(Turtle):
         self.turn_number = 0
         self.valid_moves = []
         self.last_move = []
+        self.white_last_move = -10
+        self.white_in_house = False
+        self.black_in_house = False
         self.game_over = False
 
     def make_move(self, move):
@@ -229,9 +232,22 @@ class Board(Turtle):
                 self.valid_moves.extend(self.get_valid_moves(piece))
 
     def check_win(self):
-        if set(map(tuple, self.white)).difference(set(map(tuple, STARTING_POSITIONS[1]))) == set():
-            self.game_over = True
-            print('White win')
-        if set(map(tuple, self.black)).difference(set(map(tuple, STARTING_POSITIONS[0]))) == set():
-            self.game_over = True
-            print('Black win')
+        if set(map(tuple, self.white)) - set(map(tuple, STARTING_POSITIONS[1])) == set():
+            """Check that all white pieces have arrived in house"""
+            if not self.white_in_house:
+                self.white_last_move = self.turn_number
+            self.white_in_house = True
+        if set(map(tuple, self.black)) - set(map(tuple, STARTING_POSITIONS[0])) == set():
+            """Check that all black pieces have arrived in house"""
+            self.black_in_house = True
+            if not self.white_in_house:
+                self.game_over = True
+                print('Black win')
+        if self.turn_number == self.white_last_move + 1:
+            if self.black_in_house:
+                """If black finish one turn after white, then it's a draw"""
+                self.game_over = True
+                print('Draw')
+            else:
+                self.game_over = True
+                print('White win')
